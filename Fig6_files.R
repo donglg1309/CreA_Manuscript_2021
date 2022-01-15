@@ -1,132 +1,103 @@
+
+
 #Figure 6A######################
 
-#make tiles and calculate binding signals
-tiles_2<-make_tiles_for_promoter_ATG("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/combined_HA_CreA_annotated_uniq_genes_v2.xls")
-GLU_WT_HA_promoter<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_MH11036_CreA_1.bam.bed")
-GLU_HA_1_promoter_glucose<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_HA_CreA_1.bam.bed")
-GLU_HA_1_promoter_acetate<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/ACE_HA_CreA_1.bam.bed")
-GLU_HA_1_promoter_proline<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/PRO_HA_CreA_1.bam.bed")
-GLU_HA_1_promoter_cf<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/CF_HA_CreA_1.bam.bed")
-GLU_WT_HA_promoter<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_MH11036_CreA_1.bam.bed")
-GLU_HA_2_promoter_glucose<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_HA_CreA_2.bam.bed")
-GLU_HA_2_promoter_acetate<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/ACE_HA_CreA_2.bam.bed")
-GLU_HA_2_promoter_proline<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/PRO_HA_CreA_2.bam.bed")
-GLU_HA_2_promoter_cf<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/CF_HA_CreA_2.bam.bed")
-
-#plot figure
-
-dev.new(width=12, height=6.6)
-par(mar=c(1,1,1,1),mfrow=c(1,6),xpd=FALSE)
-colors = colorRampPalette(c('black','black','yellow','yellow','orange','orange','red','red'))(200)
-plot_heatmap_B(GLU_HA_1_promoter_glucose,GLU_HA_1_promoter_glucose,1500,321)
-plot_heatmap_B(GLU_HA_1_promoter_acetate,GLU_HA_1_promoter_glucose,1500,321)
-plot_heatmap_B(GLU_HA_1_promoter_proline,GLU_HA_1_promoter_glucose,1500,321)
-plot_heatmap_B(GLU_HA_1_promoter_cf,GLU_HA_1_promoter_glucose,1500,321)
-plot_heatmap_B(GLU_WT_HA_promoter,GLU_HA_1_promoter_glucose,1500,321)
+library(RColorBrewer)
+library("gplots")
+my_palette <- colorRampPalette(c("black","black","yellow","yellow"))(n = 90)
 
 
-################################
+#read the conservation info matrix
+gene_expression_values_values_v2<-read.table("gene_conservation_values_name.xls",row.names=1)
+gene_expression_values_values<-as.matrix(gene_expression_values_values_v2)[,-10]
 
-#Figure 6B######################
+#read CreA target info
+CreA_target<-read.table("/Users/dongliguo/Documents/ANAlyses_folder/CreA_Summary/Novel_plots/Fig1/Summit_genes_v8/CreA_summits_and_annotation_v12.xls")
+CreA_target2<-as.character(CreA_target$V1)
+matrix_one<-matrix(0,nrow=length(gene_expression_values_values[,1]),ncol=length(gene_expression_values_values[1,])+1)
+matrix_one[,1:length(gene_expression_values_values[1,])]<-gene_expression_values_values
+matrix_one[rownames(gene_expression_values_values)%in%CreA_target2,length(gene_expression_values_values[1,])+1]<-10
+colnames(matrix_one)<-c(as.character(files_names)," CreA_targets")
 
-boxplot(
-(rowMeans(GLU_HA_1_promoter_glucose[72:204,])+rowMeans(GLU_HA_2_promoter_glucose[72:204,]))/2,
-(rowMeans(GLU_HA_1_promoter_acetate[72:204,])+rowMeans(GLU_HA_2_promoter_acetate[72:204,]))/2,
-(rowMeans(GLU_HA_1_promoter_proline[72:204,])+rowMeans(GLU_HA_2_promoter_proline[72:204,]))/2,
-(rowMeans(GLU_HA_1_promoter_cf[72:204,])+rowMeans(GLU_HA_2_promoter_cf[72:204,]))/2,
-rowMeans(GLU_WT_HA_promoter[72:204,]),
-col=c("tomato","lightblue","orchid","palegreen","saddlebrown"),outline=FALSE,ylim=c(0,800))
-
-#t.test for the figures
-t.test((rowMeans(GLU_HA_1_promoter_glucose[72:204,])+rowMeans(GLU_HA_2_promoter_glucose[72:204,]))/2,(rowMeans(GLU_HA_1_promoter_acetate[72:204,])+rowMeans(GLU_HA_2_promoter_acetate[72:204,]))/2)
-t.test((rowMeans(GLU_HA_1_promoter_glucose[72:204,])+rowMeans(GLU_HA_2_promoter_glucose[72:204,]))/2,(rowMeans(GLU_HA_1_promoter_proline[72:204,])+rowMeans(GLU_HA_2_promoter_proline[72:204,]))/2)
-t.test((rowMeans(GLU_HA_1_promoter_glucose[72:204,])+rowMeans(GLU_HA_2_promoter_glucose[72:204,]))/2,(rowMeans(GLU_HA_1_promoter_cf[72:204,])+rowMeans(GLU_HA_2_promoter_cf[72:204,]))/2)
-t.test((rowMeans(GLU_HA_1_promoter_cf[72:204,])+rowMeans(GLU_HA_2_promoter_cf[72:204,]))/2,(rowMeans(GLU_WT_HA_promoter[72:204,])+rowMeans(GLU_WT_HA_promoter[72:204,]))/2)
-
-################################
+#get S. pombe gene names and the corresponding A. nidulans genes, the similiar programming was run for other species
+Spom_Anid_orthologs2<-read.table("/Volumes/LiguoDisk/Methods/Fungi_Motif/Gene_names/FungiDB-3.0_Anidulans_FGSCA4Gene.txt_output_connection/SPBC_Gene_name_output.txt")
+Spom_targets<-read_files_into_character("/Users/dongliguo/Documents/ANAlyses_folder/CreA_Summary/Novel_plots/conserved_processes/Spom_targets.xls")
+Spom_distribute<-Spom_Anid_orthologs2[Spom_Anid_orthologs2[,1]%in%Spom_targets,2]
 
 
+#function for species relationship order according to CreA binding 
+order_files_CreA<-function(matrix_names_out,gene_names_out)
+{
+        target_part<-matrix_names_out[gene_names_out%in%CreA_target2,]
+        non_target_part<-matrix_names_out[!gene_names_out%in%CreA_target2,]
+        row.names(target_part)<-gene_names_out[gene_names_out%in%CreA_target2]
+        row.names(non_target_part)<-gene_names_out[!gene_names_out%in%CreA_target2]
+        output_values<-rbind(
+        target_part[order(rowSums(target_part),decreasing=TRUE),],
+        non_target_part[order(rowSums(non_target_part),decreasing=TRUE),])
+        return(output_values)
+}
+matrix_one_out<-rbind(
+order_files_CreA(matrix_one[rowSums(matrix_one[,1:8])>0,],row.names(gene_expression_values_values_v2)[rowSums(matrix_one[,1:8])>0]),
+order_files_CreA(matrix_one[rowSums(matrix_one[,9:15])>=2&rowSums(matrix_one[,1:8])==0,],row.names(gene_expression_values_values_v2)[rowSums(matrix_one[,9:15])>=2&rowSums(matrix_one[,1:8])==0]),
+order_files_CreA(matrix_one[rowSums(matrix_one[,9:15])==1&rowSums(matrix_one[,1:8])==0,],row.names(gene_expression_values_values_v2)[rowSums(matrix_one[,9:15])==1&rowSums(matrix_one[,1:8])==0])
+)
+matrix_one<-matrix_one_out
 
-#Figure 6F######################
 
-#get single or multiple CreA binding TF genes
-full_list_transcription_factors_v2<-read_files_into_character("/Users/dongliguo/Documents/ANAlyses_folder/CreA_Summary/final_plots/Fig4/full_list_transcription_factors.xls")
-mutiple_genes<-read_files_into_character("/Users/dongliguo/Documents/ANAlyses_folder/CreA_Summary/final_plots/Fig2/gene_list_with_mutiple_binding.xls")
-signle_genes<-read_files_into_character("/Users/dongliguo/Documents/ANAlyses_folder/CreA_Summary/final_plots/Fig2/gene_list_with_single_binding.xls")
-write.table(mutiple_genes[mutiple_genes%in%full_list_transcription_factors_v2],file="mutiple_binding_TFs.xls",row.names=FALSE,col.names=FALSE,quote=FALSE,sep="\t")
-write.table(signle_genes[signle_genes%in%full_list_transcription_factors_v2],file="signle_binding_TFs.xls",row.names=FALSE,col.names=FALSE,quote=FALSE,sep="\t")
+#plot CreA binding info
+output_values_matrix_input_barp_CreA<-matrix(c(
+length(row.names(gene_expression_values_values_v2)[rowSums(matrix_one[,1:8])>0][row.names(gene_expression_values_values_v2)[rowSums(matrix_one[,1:8])>0]%in%CreA_target2]),
+length(row.names(gene_expression_values_values_v2)[rowSums(matrix_one[,9:15])>=2&rowSums(matrix_one[,1:8])==0][row.names(gene_expression_values_values_v2)[rowSums(matrix_one[,9:15])>=2&rowSums(matrix_one[,1:8])==0]%in%CreA_target2]),
+length(row.names(gene_expression_values_values_v2)[rowSums(matrix_one[,9:15])==1&rowSums(matrix_one[,1:8])==0][row.names(gene_expression_values_values_v2)[rowSums(matrix_one[,9:15])==1&rowSums(matrix_one[,1:8])==0]%in%CreA_target2])),nrow=1)
+output_values_matrix_input_barp_plot<-rbind(rev(output_values_matrix_input_barp),rev(output_values_matrix_input_barp))
+barplot(t(output_values_matrix_input_barp_plot),col=c("whitesmoke","red"))
+
+#plot the species figure
+plot_heatmap_E((matrix_one[rowSums(matrix_one[,1:8])>0,]),1,15)
+plot_heatmap_E((matrix_one[rowSums(matrix_one[,9:15])>=2&rowSums(matrix_one[,1:8])==0,]),1,15)
+plot_heatmap_E(matrix_one[rowSums(matrix_one[,9:15])==1&rowSums(matrix_one[,1:8])==0,],1,15)
+
+#write out the gene name for each cluster
+write.table(rownames(gene_expression_values_values)[rowSums(matrix_one[,1:8])>0],file="Aspergillus_nidulans_cluster_one.xls",row.names=FALSE,col.names=FALSE,quote=FALSE)
+write.table(rownames(gene_expression_values_values)[rowSums(matrix_one[,9:15])>=2&rowSums(matrix_one[,1:8])==0],file="Aspergillus_nidulans_cluster_two.xls",row.names=FALSE,col.names=FALSE,quote=FALSE)
+write.table(rownames(gene_expression_values_values)[rowSums(matrix_one[,9:15])==1&rowSums(matrix_one[,1:8])==0],file="Aspergillus_nidulans_cluster_three.xls",row.names=FALSE,col.names=FALSE,quote=FALSE)
+
+#plot binding info for pombe, other species will run similiar script
+matrix_pombe_genes<-matrix(0,ncol=2,nrow=length(rownames(matrix_one_out)))
+matrix_pombe_genes[rownames(matrix_one_out)%in%Spom_distribute,]<-1
+sum(matrix_pombe_genes[1:5333,1])
+sum(matrix_pombe_genes[5334:(5333+3978),1])
+colors <- colorRampPalette(c("whitesmoke","whitesmoke","red","red"))(n = 90)
+plot_heatmap_E(as.matrix(matrix_pombe_genes)+as.matrix(rbind(matrix(0,nrow=1,ncol=2),matrix_pombe_genes[1:10719,]))+
+as.matrix(rbind(matrix(0,nrow=2,ncol=2),matrix_pombe_genes[1:10718,]))+
+as.matrix(rbind(matrix(0,nrow=3,ncol=2),matrix_pombe_genes[1:10717,]))+
+as.matrix(rbind(matrix(0,nrow=4,ncol=2),matrix_pombe_genes[1:10716,]))+
+as.matrix(rbind(matrix(0,nrow=5,ncol=2),matrix_pombe_genes[1:10715,])),1,2)
 
 
-#make tiles for the binding and calculate binding density
-tiles_2<-make_tiles_for_promoter_ATG("signle_binding_TFs.xls")
-GLU_WT_promoter_single<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_BIA1_CreA_1.bam.bed")
-GLU_WT_HA_promoter_single<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_MH11036_CreA_1.bam.bed")
-GLU_S4_1_promoter_single<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_S4_CreA_1.bam.bed")
-GLU_S4_2_promoter_single<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_S4_CreA_2.bam.bed")
-GLU_HA_1_promoter_single<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_HA_CreA_1.bam.bed")
-GLU_HA_2_promoter_single<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_HA_CreA_2.bam.bed")
-
-#make tiles for the binding and calculate binding density
-tiles_2<-make_tiles_for_promoter_ATG("mutiple_binding_TFs.xls")
-GLU_WT_promoter_multiple<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_BIA1_CreA_1.bam.bed")
-GLU_WT_HA_promoter_multiple<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_MH11036_CreA_1.bam.bed")
-GLU_S4_1_promoter_multiple<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_S4_CreA_1.bam.bed")
-GLU_S4_2_promoter_multiple<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_S4_CreA_2.bam.bed")
-GLU_HA_1_promoter_multiple<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_HA_CreA_1.bam.bed")
-GLU_HA_2_promoter_multiple<-normalization_tiles_for_promoter("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_HA_CreA_2.bam.bed")
-
-#plot the figure
-plot(colMeans(GLU_S4_1_promoter_single),type="l",ylim=c(150,1000),col="green",lwd=2)
-lines(colMeans(GLU_S4_1_promoter_multiple),type="l",ylim=c(150,1000),col="orange",lwd=2)
-
-################################
-
-#Figure 6G######################
-
-#read gene expression and TF gene list
-full_list_transcription_factors_v2<-read_files_into_character("/Users/dongliguo/Documents/ANAlyses_folder/CreA_Summary/final_plots/Fig4/full_list_transcription_factors.xls")
-mutiple_genes<-read_files_into_character("/Users/dongliguo/Documents/ANAlyses_folder/CreA_Summary/final_plots/Fig2/gene_list_with_mutiple_binding.xls")
-signle_genes<-read_files_into_character("/Users/dongliguo/Documents/ANAlyses_folder/CreA_Summary/final_plots/Fig2/gene_list_with_single_binding.xls")
-
-#find summits for each binding around TF gene promoters
-summit_bed_files<-read.table("CreA_summits_and_annotation_per_annotation_v12.bed",sep="\t")
-summit_bed_files_v2<-summit_bed_files[summit_bed_files[,5]%in%"promoter",]
-write.table(summit_bed_files_v2[summit_bed_files_v2[,6]%in%full_list_transcription_factors_v2,c(1,2,3,6,2)],file="TF_binding_density_summits.bed",row.names=FALSE,col.names=FALSE,quote=FALSE,sep="\t")
-write.table(summit_bed_files_v2[!summit_bed_files_v2[,6]%in%full_list_transcription_factors_v2,c(1,2,3,6,2)],file="others_binding_density_summits.bed",row.names=FALSE,col.names=FALSE,quote=FALSE,sep="\t")
-
-#make tiles for the summits and get the corresponding signals
-source("/Users/dongliguo/Documents/ANAlyses_folder/AcuK_M_FacB_Summary/FacB_analysis/make_tiles_functions.R")
-normalization_tiles_for_summits_counts<-function(x)
-        {
-                M_0h<-import.bed(x)
-                start(ranges(M_0h))[as.character(strand(M_0h))=="-"]=start(ranges(M_0h))[as.character(strand(M_0h))=="-"]
-                width(ranges(M_0h))[as.character(strand(M_0h))=="+"]=1
-                M_0h.p=countOverlaps(tiles_2,M_0h)
-                M_0h.p.matrix=matrix(M_0h.p,nrow=length(tiles_2)/3001,ncol=3001,byrow=TRUE)
-                l<-length(M_0h)
-                M_0h.p.matrix2<-M_0h.p.matrix
-                for ( i in 1:length(M_0h.p.matrix[,1]) )
-                        {
-                                for ( j in 1:length(M_0h.p.matrix[i,]))
-                                {
-                                       M_0h.p.matrix2[i,j]<-M_0h.p.matrix[i,j]*1000000/(0.05*l)
-                                }
-                        }
-                return(M_0h.p.matrix2)
-
-        }
-TF_binding_density_out<-read.table("TF_binding_density_summits.bed")
-others_binding_density_out<-read.table("others_binding_density_summits.bed")
-tiles_2<-make_tiles_for_summit_percise("TF_binding_density_summits.bed")
-CreA_glucose_TFs<-normalization_tiles_for_summits_counts("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_S4_CreA_1.bam.bed")
-tiles_2<-make_tiles_for_summit_percise("others_binding_density_summits.bed")
-CreA_glucose_others<-normalization_tiles_for_summits_counts("/Volumes/LiguoDisk/CreA_RNA_files/CreA_new_ChIP_seqs_files/bam_files_out/GLU_S4_CreA_1.bam.bed")
-
-#plot the figures
-boxplot(rowMaxs(CreA_glucose_TFs[,1450:1550]),rowMaxs(CreA_glucose_others[,1450:1550]),outline=FALSE)
-boxplot(rowMeans(CreA_glucose_TFs[,1475:1525]),sample(rowMeans(CreA_glucose_others[,1475:1525]),length(rowMeans(CreA_glucose_TFs[,1475:1525]))),col=c("red","gray"),outline=TRUE,ylim=c(0,800),pch=16)
+#plot the heatmap for niger data, other species will run similiar script
+niger_DEGs<-read_files_into_character("/Users/dongliguo/Documents/ANAlyses_folder/CreA_Summary/Novel_plots/Fig2/conserved_genes/niger_DEGs_nidulans.xls")
+matrix_niger_DEGs_genes<-matrix(0,ncol=2,nrow=length(rownames(matrix_one_out)))
+matrix_niger_DEGs_genes[rownames(matrix_one_out)%in%niger_DEGs,]<-1
+sum(matrix_niger_DEGs_genes[1:5333,1])
+sum(matrix_niger_DEGs_genes[5334:(5333+3978),1])
+colors <- colorRampPalette(c("whitesmoke","whitesmoke","orange","orange"))(n = 90)
+plot_heatmap_E(matrix_niger_DEGs_genes+rbind(matrix(0,nrow=1,ncol=2),matrix_niger_DEGs_genes[1:10719,])+
+rbind(matrix(0,nrow=2,ncol=2),matrix_niger_DEGs_genes[1:10718,])+
+rbind(matrix(0,nrow=3,ncol=2),matrix_niger_DEGs_genes[1:10717,])+
+rbind(matrix(0,nrow=4,ncol=2),matrix_niger_DEGs_genes[1:10716,])+
+rbind(matrix(0,nrow=5,ncol=2),matrix_niger_DEGs_genes[1:10715,]),1,2)
 
 ################################
+
+
+#Figure 6B#################################
+
+#similiar plot with Figure 3B
+
+##########################################
+
 
 
 

@@ -27,7 +27,6 @@ for ( i in 1:length(read_files_into_character("secondary_metabolism_cluster.xls"
 }
 write.table(data.frame(SM_gene_A,convert_gene_list(SM_gene_A),SM_cluster_A,matrix_all_include),file="gene_matrix_all.xls",row.names=FALSE,col.names=FALSE,sep="\t",quote=FALSE)
 
-
 #put the raw info
 matrix_all_include<-matrix(0,nrow=length(SM_gene_A),ncol=7)
 matrix_all_include[SM_gene_A%in%all_the_targets,1]<-1
@@ -193,8 +192,6 @@ error.bar(barx,y1.means, y1.sd,lwd=0.7)
 axis(2,col.axis="black",at=c(0,150,300),labels=c(0,150,300),lwd=1,las=2,cex.axis=2)
 
 ######################################
-
-
 
 
 #Figure 4F############################
@@ -426,7 +423,6 @@ points (c(1,1),c(10+20*i,10+20*i),pch=21,col="black",bg=the_color_used[i],lwd=1,
 }
 
 #the asexual program is same with the sexual one, just gene list is different
-
 #################################################################
 
 

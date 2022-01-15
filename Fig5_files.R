@@ -1,31 +1,38 @@
 
 #Figure 5A######################
 
-#programming is same with Figure 4F
+#programming is same with Figure 4D
 
 ################################
 
 
 #Figure 5B######################
 
-#programming is same with Figure 4D
+#programming is same with Figure 4F
 
 ################################
 
 
 #Figure 5C######################
 
-#programming is same with Figure 4F
+#programming is same with Figure 4D
 
 ################################
 
-#Figure 5E######################
+#Figure 5F######################
 
 #programming is same with Figure 4J
 
 ################################
 
-#Figure 5F######################
+#Figure 5G######################
+
+#programming is same with Figure 4F
+
+################################
+
+
+#Figure 5H######################
 
 #programming is same with Figure 4D
 
@@ -122,9 +129,4 @@ rbind(matrix(0,nrow=4,ncol=2),matrix_niger_DEGs_genes[1:10716,])+
 rbind(matrix(0,nrow=5,ncol=2),matrix_niger_DEGs_genes[1:10715,]),1,2)
 
 ################################
-
-
-
-
-
 

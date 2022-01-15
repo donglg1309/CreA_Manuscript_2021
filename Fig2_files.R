@@ -60,9 +60,14 @@ library("gplots")
 ratio_matrix_values<-data.frame(rowMeans(matrix_values[,1:3]),rowMeans(matrix_values[,4:6]))
 ratio_matrix_values[ratio_matrix_values>100]=100
 ratio_matrix_values_ori<-data.frame(rowMeans(matrix_values[,1:3]),rowMeans(matrix_values[,4:6]))
-my_palette <- colorRampPalette(c("blue", "blue","whitesmoke","whitesmoke","orange", "orange"))(n = 100)
+my_palette <- colorRampPalette(c("blue", "blue","whitesmoke","whitesmoke","red", "red"))(n = 100)
 heatmap.2(as.matrix(ratio_matrix_values),symm=T,scale='none',symkey=T,symbreaks=T,sepcolor="black",trace=c("none"),cexRow = 1.3,density.info=c("none"),colsep=c(0,1,2),rowsep=0:(nrow(as.matrix(ratio_matrix_values))+1),sepwidth=c(0.001,0.0001),col=my_palette[1:100],Colv=FALSE,Rowv=FALSE,cellnote=round(ratio_matrix_values_ori, digits=1),notecol="black",notecex=1.5)
 
 ##############################################
 
+#Figure 2F###################################
+
+#programming is same with Figure 4E
+
+#############################################
 
