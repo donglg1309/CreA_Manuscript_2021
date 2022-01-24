@@ -43,9 +43,9 @@ abline(v=log10(1/2), col="black")
 ###Fig1B barplot for KEGG selected process##########
 
 #up-regulated genes
-barplot(c(50,16,5,31,5,3,43,28),space=0.5,col="tomato",ylim=c(0,100))
+barplot(value_input_up,space=0.5,col="tomato",ylim=c(0,100))
 #down-regulated genes
-barplot(c(27,22,18),space=0.5,col="skyblue2",ylim=c(0,100))
+barplot(value_input_down,space=0.5,col="skyblue2",ylim=c(0,100))
 
 ####################################################
 

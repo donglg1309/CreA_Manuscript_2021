@@ -134,7 +134,7 @@ plot_heatmaps_RNA_seq_v2<-function(gene_list_for_plot_normal)
         {
                 matrix_values[i,]<-as.numeric(full_list_files[as.character(full_list_files[,c(1)])%in%gene_list_for_plot_normal[i],c(26,27,28,14,15,16)])
         }
-        matrix_values[matrix_values=0]=0.0000000001
+        matrix_values[matrix_values==0]=0.0000000001
         ratio_matrix<-log2(cbind(rowMeans(matrix_values[,4:6])/rowMeans(matrix_values[,1:3])))
         ratio_matrix[ratio_matrix>4]=4
         ratio_matrix[ratio_matrix<c(-4)]=-4
